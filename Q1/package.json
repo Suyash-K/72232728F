@@ -1,6 +1,7 @@
 {
   "name": "q1",
   "version": "1.0.0",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,7 +26,7 @@
     "zod": "^3.25.50"
   },
   "devDependencies": {
-    "eslint": "^9.28.0",
+    "eslint": "^8.56.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "prettier": "^3.5.3"
   }

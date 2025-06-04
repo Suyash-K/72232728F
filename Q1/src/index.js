@@ -16,8 +16,15 @@ app.get('/ping', (req, res) => {
   });
 });
 
-app.get('/numbers/:numberid', numbersController.getNumbers.bind(numbersController));
-app.use('*', (req, res) => {
+app.get('/set-token', (req, res) => {
+  const thirdPartyService = require('./services/thirdPartyService');
+  thirdPartyService.setToken(config.accessToken, config.tokenExpiry);
+  res.json({ message: 'Token set successfully' });
+});
+
+app.get('/numbers/:numberid', numbersController.getNumbers);
+
+app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
@@ -27,7 +34,7 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(config.port, () => {
-  console.log(`🚀 Average Calculator Microservice started on port ${config.port}`);
-  console.log(`📊 Window size: ${config.windowSize}`);
-  console.log(`⏱️  Request timeout: ${config.requestTimeout}ms`);
+  console.log(` Average Calculator Microservice started on port ${config.port}`);
+  console.log(` Window size: ${config.windowSize}`);
+  console.log(` Request timeout: ${config.requestTimeout}ms`);
 });
