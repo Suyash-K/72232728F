@@ -1,22 +1,27 @@
 const thirdPartyService = require('../services/thirdPartyService');
 const windowService = require('../services/windowService');
+const { validateNumberId } = require('../utils/validation');
 const { StatusCodes } = require('http-status-codes');
 
 class NumbersController {
   async getNumbers(req, res) {
+    const startTime = Date.now();
+    
     try {
       const { numberid } = req.params;
       
-      const validTypes = ['p', 'f', 'e', 'r'];
-      if (!validTypes.includes(numberid)) {
+      try {
+        validateNumberId(numberid);
+      } catch (validationError) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          error: 'Invalid number type. Use p, f, e, or r'
+          error: validationError.message
         });
       }
 
       const fetchedNumbers = await thirdPartyService.fetchNumbers(numberid);
-
+      
       const windowUpdate = windowService.addNumbers(fetchedNumbers);
+      
 
       const average = windowService.calculateAverage();
 
@@ -26,6 +31,11 @@ class NumbersController {
         numbers: fetchedNumbers,
         avg: average
       };
+
+      const responseTime = Date.now() - startTime;
+      if (responseTime > 500) {
+        console.warn(`Response time: ${responseTime}ms - exceeded 500ms limit`);
+      }
 
       res.json(response);
     } catch (error) {
